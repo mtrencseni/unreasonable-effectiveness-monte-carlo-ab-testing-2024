@@ -62,7 +62,7 @@
 \author{Márton Trencséni (\texttt{mtrencseni@gmail.com})}
 
 \begin{abstract}
-Monte Carlo simulations are a powerful method for exploring complex statistical concepts in A/B testing and randomized controlled trials. By tracing the historical context of Monte Carlo methods and building upon foundational works like Wigner's \textit{The Unreasonable Effectiveness of Mathematics in the Natural Sciences,} we demonstrate how computational experimentation bridges theoretical statistics and practical application. The article delves into key aspects of A/B testing—including false positive rates, statistical power, variance reduction techniques, early stopping, the interplay between frequentist and Bayesian approaches, and experimentation on social networks—using Monte Carlo simulations to illuminate each concept. Through these explorations, we highlight how Monte Carlo simulations enhance understanding, allowing practitioners to design more robust experiments, interpret results accurately, and make decisions that are both statistically sound and practically relevant. The combination of computational power and conceptual insight is the key to Monte Carlo methods' effectiveness in modern data analysis and experimental design. 
+This paper examines the use of Monte Carlo simulations to understand statistical concepts in A/B testing and Randomized Controlled Trials (RCTs). We discuss the applicability of simulations in understanding false positive rates and estimate statistical power, implementing variance reduction techniques and examining the effects of early stopping. By comparing frequentist and Bayesian approaches, we illustrate how simulations can clarify the relationship between p-values and posterior probabilities, and the validity of such approximations. The study also references how Monte Carlo simulations can be used to understand network effects in RCTs on social networks. Our findings show that Monte Carlo simulations are an effective tool for experimenters to deepen their understanding and ensure their results are statistically valid and practically meaningful.
 
 \end{abstract}
 
@@ -223,17 +223,17 @@ These short snippets illustrate how Monte Carlo simulations make abstract statis
 In A/B testing, accurately detecting differences between two groups hinges on minimizing variance in the measurements. When we compare the means of a metric—such as user spend or conversion rates—across control and treatment groups, having sample sizes of a few thousand units per variant assures the Central Limit Theorem holds, meaning that the sampling distribution of the mean approximates a normal distribution. Consequently, the difference between the two group means (often referred to as the lift) also follows a normal distribution, with its variance being the sum of the variances of each group. Reducing this variance is crucial for increasing the precision and reliability of our experimental results. See the article \href{https://bytepawn.com/ab-testing-and-the-central-limit-theorem.html}{A/B testing and the Central Limit Theorem} for a more in-depth exploration of the CLT with Monte Carlo methods.
 
 \begin{figure}[h]
-	\centering 
-	\includegraphics[width=0.4\textwidth]{fig-1.png}	
-	\caption{Monte Carlo simulation illustrating that increasing the sample size reduces the variance of the lift measurement.} 
+  \centering 
+  \includegraphics[width=0.4\textwidth]{fig-1.png}  
+  \caption{Monte Carlo simulation illustrating that increasing the sample size reduces the variance of the lift measurement.} 
 \end{figure}
 
 The most straightforward way to reduce variance is by increasing the sample size. According to statistical principles, the variance of the sample mean decreases proportionally with the increase in sample size. Specifically, quadrupling the number of observations halves the standard error. However, collecting more data may not be feasible due to time constraints, resource limitations, or the finite availability of participants. Additionally, extending the duration of an experiment doesn't always yield a proportional increase in unique users, as returning visitors may inflate sample counts without providing new information.
 
 \begin{figure}[h]
-	\centering 
-	\includegraphics[width=0.4\textwidth]{fig-2.png}	
-	\caption{Monte Carlo simulation illustrating that moving towards a more even split reduces the variance of the lift measurement.} 
+  \centering 
+  \includegraphics[width=0.4\textwidth]{fig-2.png}  
+  \caption{Monte Carlo simulation illustrating that moving towards a more even split reduces the variance of the lift measurement.} 
 \end{figure}
 
 Allocating participants equally between the control and treatment groups minimizes variance in the estimated effect size. When the total sample size is fixed, a 50\%-50\% split ensures the lowest possible variance for the difference between group means. Deviations from an even split increase variance because the variance of each group's mean is inversely proportional to its sample size. An uneven allocation, such as 90\%-10\%, results in a higher combined variance compared to an even split, as illustrated in the figure above. Therefore, when feasible, it's advisable to distribute participants equally to enhance the sensitivity of the experiment. However, in practice an even split is usually not chosen, as risk control considerations lead to significantly less users in the risky treatment group. Risk control considerations have to be consciously weighed and balanced with the possibility of lower variance by the experiment designers.
@@ -245,9 +245,9 @@ Stratified sampling involves dividing the overall sample into distinct subgroups
 Incorporating covariates—additional variables that are correlated with the outcome metric—can significantly reduce variance. CUPED (Controlled Experiment Using Pre-Experiment Data) is a technique that adjusts for variance using covariates measured before the experiment begins. If historical data on the outcome metric is available, and there is a strong correlation between past and current behavior, this information can be used to adjust the post-treatment measurements.
 
 \begin{figure}[h]
-	\centering 
-	\includegraphics[width=0.4\textwidth]{fig-3.png}	
-	\caption{Monte Carlo simulation illustrating that using CUPED to take into account historic data reduces the variance of the lift measurement.} 
+  \centering 
+  \includegraphics[width=0.4\textwidth]{fig-3.png}  
+  \caption{Monte Carlo simulation illustrating that using CUPED to take into account historic data reduces the variance of the lift measurement.} 
 \end{figure}
 
 CUPED works by computing an adjusted metric that accounts for the covariance between the pre-experiment and post-experiment data. This adjustment effectively removes the portion of variance explained by the covariate, leading to a more precise estimate of the treatment effect, as illustrated in the figure above. For example, if users who spent more before the experiment tend to spend more during the experiment, using their prior spend as a covariate can control for this variability.
@@ -263,9 +263,9 @@ However, in practice, experimenters often face the temptation of early stopping�
 Early stopping disrupts the statistical integrity of the experiment. Each time we perform an interim analysis and test for significance, there's a chance of observing a false positive purely by random chance. If we repeatedly check the data and stop the experiment once we achieve statistical significance, we inadvertently increase the overall probability of committing a Type I Error (false positive). For instance, suppose we plan to collect $ N = 3\,000 $ samples but decide to peek at the results every $ 1\,000 $ samples. At each interim analysis, we perform a statistical test at the significance level $ \alpha = 0.05 $. The cumulative effect of conducting multiple tests increases the overall false positive rate beyond the nominal 5\%. In fact, simulations show that with three such analyses, the false positive rate can nearly double.
 
 \begin{figure}[h]
-	\centering 
-	\includegraphics[width=0.4\textwidth]{fig-4.png}	
-	\caption{P-values for three A/A test simulations runs, evaluated every 100 samples, 100 times for a total of $ N=10\,000$ samples. 2 out of 3 Monte Carlo runs cross the critical $\alpha$ level before the experiment concludes, even though all 3 end up without hitting statistical significance.} 
+  \centering 
+  \includegraphics[width=0.4\textwidth]{fig-4.png}  
+  \caption{P-values for three A/A test simulations runs, evaluated every 100 samples, 100 times for a total of $ N=10\,000$ samples. 2 out of 3 Monte Carlo runs cross the critical $\alpha$ level before the experiment concludes, even though all 3 end up without hitting statistical significance.} 
 \end{figure}
 
 The intuition behind this increase lies in the nature of p-values and random variability. Under the null hypothesis (no real difference between variants A and B), p-values are uniformly distributed between 0 and 1. This means that at any given time, there's always a probability $ \alpha $ of observing a p-value less than the significance threshold $ \alpha $ purely by chance. When we perform multiple interim analyses, each one provides an additional opportunity to cross the significance threshold due to random fluctuations in the data. The more we peek, the higher the chance that we'll observe a statistically significant result when there is no true effect. This is shown in the Figure 4, illustrating the p-values for three A/A test simulations runs, evaluated every 100 samples, 100 times for a total of $ N=10\,000$ samples.
@@ -291,9 +291,9 @@ On the other hand, the Bayesian approach flips this perspective. Instead of focu
 The Beta distribution is parameterized by two parameters, $ \alpha $ and $ \beta $, corresponding to the number of successes (conversions) and failures (non-conversions), respectively. Given the observed data—say, $ C $ conversions out of $ N $ trials—we set $ \alpha = C $ and $ \beta = N - C $ for each variant. This allows us to express our uncertainty about the true conversion rate of each variant as a probability distribution. To determine the probability that B is better than A, we compute $ P(\mu_B > \mu_A) $, where $ \mu_A $ and $ \mu_B $ are the true conversion rates of A and B. This involves integrating the joint probability distribution over the region where $ \mu_B > \mu_A $. While sometimes a closed-form solution exists, we often use Monte Carlo integration by sampling from the Beta distributions of both A and B and estimating the proportion of times $ \mu_B > \mu_A $.
 
 \begin{figure}[h]
-	\centering 
-	\includegraphics[width=0.4\textwidth]{fig-5.png}	
-	\caption{Monte Carlo simulations show that in many scenarios, the frequentists p-value $p_f$ and the bayesian probability $p_b$ are complemantary and the approximation  $ p_f + p_b \approx 1 $ holds.} 
+  \centering 
+  \includegraphics[width=0.4\textwidth]{fig-5.png}  
+  \caption{Monte Carlo simulations show that in many scenarios, the frequentists p-value $p_f$ and the bayesian probability $p_b$ are complemantary and the approximation  $ p_f + p_b \approx 1 $ holds.} 
 \end{figure}
 
 An intriguing observation emerges when comparing the frequentist p-value $ p_f $ and the Bayesian posterior probability $ p_b $. Under certain conditions—specifically, when using flat priors and with sufficiently large sample sizes—the relationship $ p_f + p_b \approx 1 $ holds, as illustrated in Figure 5 using Monte Carlo methods. This suggests that, in these scenarios, the frequentist and Bayesian methods provide complementary perspectives on the same data. However, this is an approximation and does not hold exactly, especially with small sample sizes or strong prior beliefs.
@@ -317,9 +317,9 @@ Consider a scenario where we aim to test a new feature designed to increase user
 Monte Carlo simulations allow us to model such interactions by creating synthetic social networks—for example using models of networks like Watts-Strogatz graphs—and simulating user behavior over time. In these simulations, each user (node) has a propensity to produce content, which can be influenced by both intrinsic factors and the activity of their neighbors. By assigning users to treatment and control groups while accounting for their network connections, we can run numerous simulations to observe how treatment effects propagate through the network.
 
 \begin{figure}[h]
-	\centering 
-	\includegraphics[width=0.4\textwidth]{fig-6.png}	
-	\caption{Watts-Strogatz graph with $(n=100, k=6, p=0.1)$, with $N=20$ random treatment nodes colored blue.}
+  \centering 
+  \includegraphics[width=0.4\textwidth]{fig-6.png}  
+  \caption{Watts-Strogatz graph with $(n=100, k=6, p=0.1)$, with $N=20$ random treatment nodes colored blue.}
 \end{figure}
 
 These simulations reveal several key effects that impact A/B testing on social networks. One such effect is the spillover effect, where the treatment effect spreads from treated users to their neighbors in the control group. Related to this is the experiment dampening effect; due to spillover, the observed difference between the treatment and control groups may be smaller than the actual effect of the treatment. The increased activity in the control group narrows the gap we aim to measure. Another phenomenon is the intrinsic dampening effect, where the full potential of the treatment is not realized because the untreated parts of the network (the control group) have lower activity levels. This reduction diminishes the network effect for treated users, as they benefit less from interactions with their less active neighbors. The clustering effect also plays a significant role; if the treated users are more tightly clustered within the network, the network effects are amplified. A clustered treatment group can lead to a higher measured effect compared to a randomly dispersed treatment group because treated users reinforce each other's activity. Additionally, the degree distribution effect arises from variations in the number of connections (degree) each user has, influencing how they and their neighbors respond to the treatment. Users with more connections may have a disproportionate impact on spreading the treatment effect through the network. Lastly, the experiment size effect shows that as the size of the treatment group increases, the absolute content production in the network rises due to the network effects. However, the relative difference between the treatment and control groups may not increase proportionally because the spillover effect also enhances the control group's activity.
